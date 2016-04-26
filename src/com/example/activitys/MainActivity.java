@@ -88,7 +88,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.start:
 			setBluetooth();
-			Toast.makeText(this, "start buletooth", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.findBlue:
 			if(blueAdapter.isDiscovering()){
@@ -121,8 +120,11 @@ public class MainActivity extends Activity implements OnClickListener {
 				in.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
 				startActivity(in);
 				// 直接开启，不经过提示
-				blueAdapter.enable();
+//				blueAdapter.enable();
+			}else{
+				Toast.makeText(this, "Bluetooth have started", Toast.LENGTH_SHORT).show();
 			}
+			
 		} else {
 			// 设备不支持蓝牙,显示弹出框提醒用户
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
