@@ -18,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.bluetoothbroadcast.DeviceReceiver;
 import com.example.bluetoothtest.R;
@@ -65,7 +66,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		initView();
 	}
 
 	private void initView() {
@@ -87,9 +88,18 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.start:
 			setBluetooth();
+			Toast.makeText(this, "start buletooth", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.findBlue:
-			findAvalibleDevice();
+			if(blueAdapter.isDiscovering()){
+				blueAdapter.cancelDiscovery();
+				findBlue.setText("Repeat Searcher");
+			}else{
+				findAvalibleDevice();
+				blueAdapter.startDiscovery();
+				findBlue.setText("Stop Searcher");
+			}
+			
 		default:
 			break;
 		}
