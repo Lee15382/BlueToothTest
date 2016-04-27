@@ -34,12 +34,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/findBlue"
         android:text="Bluetooth Communication" />
-     <TextView 
+     <Button
          android:id="@+id/communicationInfo"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_below="@+id/communication"
-         
+         android:text="open buletooth"
          />
 
     <ListView

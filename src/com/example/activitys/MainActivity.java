@@ -9,11 +9,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.bluetoothbroadcast.DeviceReceiver;
 import com.example.bluetoothtest.R;
+import com.example.service.BluetoothService;
 import com.example.tools.BlueToothConnectThread;
 import com.example.tools.BlueToothIOStream;
 
@@ -35,20 +40,25 @@ public class MainActivity extends Activity implements OnClickListener {
 	private DeviceReceiver mydevice;
 	private boolean hasregister = false;
 	private BlueToothConnectThread connect;
-	private BluetoothDevice device = null; 
+	private BluetoothDevice device = null;
 	private String address = "00:80:25:4A:1C:79";
 	private BlueToothIOStream blueToothIOStream;
-	
-	//界面元素
+
+	// private Context context =MainActivity.this;
+
+	// 界面元素
 	private ListView deviceListView;
 	private Button start;
 	private Button findBlue;
 	private Button communication;
-	
+	private Button test;
+
 	public static final int UPDATE_TEXT = 1;
-	
-	private Handler handler = new Handler(){
-		public void handleMessage(Message msg){
+	public static final String OPEN = "open buletooth";
+	public static final String CLOSE = "close buletooth";
+
+	private Handler handler = new Handler() {
+		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case UPDATE_TEXT:
 				System.out.println(msg.obj.toString());
@@ -56,6 +66,22 @@ public class MainActivity extends Activity implements OnClickListener {
 			default:
 				break;
 			}
+		}
+	};
+	private BluetoothService.Bluetooth bluetooth;
+
+	private ServiceConnection conn = new ServiceConnection() {
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+		}
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			bluetooth = (BluetoothService.Bluetooth) service;
+			bluetooth.setBluetooth();
+			
+
 		}
 	};
 
@@ -74,7 +100,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 		super.onStart();
 	}
-	//解除广播
+
+	// 解除广播
 	@Override
 	protected void onDestroy() {
 		if (blueAdapter != null && blueAdapter.isDiscovering()) {
@@ -104,10 +131,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		start = (Button) findViewById(R.id.start);
 		findBlue = (Button) findViewById(R.id.findBlue);
 		communication = (Button) findViewById(R.id.communication);
+		test = (Button) findViewById(R.id.communicationInfo);
 		start.setOnClickListener(this);
 		findBlue.setOnClickListener(this);
 		communication.setOnClickListener(this);
 		System.out.println("nihao");
+		test.setOnClickListener(this);
 	}
 
 	// 按钮点击事件
@@ -118,22 +147,36 @@ public class MainActivity extends Activity implements OnClickListener {
 			setBluetooth();
 			break;
 		case R.id.findBlue:
-			if(blueAdapter.isDiscovering()){
+			if (blueAdapter.isDiscovering()) {
 				blueAdapter.cancelDiscovery();
 				findBlue.setText("Repeat Searcher");
-			}else{
+			} else {
 				findAvalibleDevice();
 				blueAdapter.startDiscovery();
 				findBlue.setText("Stop Searcher");
 			}
 			break;
 		case R.id.communication:
-			//device是要连接的设备，通过获得地址address（00:80:25:4A:1C:79）来构建
-			device = blueAdapter.getRemoteDevice(address);   
+			// device是要连接的设备，通过获得地址address（00:80:25:4A:1C:79）来构建
+			device = blueAdapter.getRemoteDevice(address);
 			connect = new BlueToothConnectThread(device, blueAdapter);
 			connect.start();
 			blueToothIOStream = new BlueToothIOStream(connect.socket, handler);
 			blueToothIOStream.start();
+			break;
+
+		case R.id.communicationInfo:
+			System.out.println(test.getText().toString().equals(OPEN));
+			if (test.getText().toString().equals(OPEN)) {
+				Intent bindIntent = new Intent(this, BluetoothService.class);
+				bindService(bindIntent, conn, BIND_AUTO_CREATE);
+				test.setText(CLOSE);
+			} else {
+				unbindService(conn);
+				Intent stopIntent = new Intent(this,BluetoothService.class);
+				stopService(stopIntent);
+				test.setText(OPEN);
+			}
 			break;
 		default:
 			break;
@@ -149,18 +192,19 @@ public class MainActivity extends Activity implements OnClickListener {
 			if (!blueAdapter.isEnabled()) {
 				Intent intent = new Intent(
 						BluetoothAdapter.ACTION_REQUEST_ENABLE);
-				startActivityForResult(intent, RESULT_FIRST_USER);
+				startActivity(intent);
 				// 使蓝牙设备可见，方便配对
 				Intent in = new Intent(
 						BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 				in.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
 				startActivity(in);
 				// 直接开启，不经过提示
-//				blueAdapter.enable();
-			}else{
-				Toast.makeText(this, "Bluetooth have started", Toast.LENGTH_SHORT).show();
+				// blueAdapter.enable();
+			} else {
+				Toast.makeText(this, "Bluetooth have started",
+						Toast.LENGTH_SHORT).show();
 			}
-			
+
 		} else {
 			// 设备不支持蓝牙,显示弹出框提醒用户
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
