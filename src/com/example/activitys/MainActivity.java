@@ -13,6 +13,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -22,17 +24,40 @@ import android.widget.Toast;
 
 import com.example.bluetoothbroadcast.DeviceReceiver;
 import com.example.bluetoothtest.R;
+import com.example.tools.BlueToothConnectThread;
+import com.example.tools.BlueToothIOStream;
 
 public class MainActivity extends Activity implements OnClickListener {
 
 	private BluetoothAdapter blueAdapter;
-	private DeviceReceiver mydevice;
 	private ArrayAdapter<String> adapter;
 	private List<String> deviceList = new ArrayList<String>();
+	private DeviceReceiver mydevice;
+	private boolean hasregister = false;
+	private BlueToothConnectThread connect;
+	private BluetoothDevice device = null; 
+	private String address = "00:80:25:4A:1C:79";
+	private BlueToothIOStream blueToothIOStream;
+	
+	//界面元素
 	private ListView deviceListView;
 	private Button start;
 	private Button findBlue;
-	private boolean hasregister = false;
+	private Button communication;
+	
+	public static final int UPDATE_TEXT = 1;
+	
+	private Handler handler = new Handler(){
+		public void handleMessage(Message msg){
+			switch (msg.what) {
+			case UPDATE_TEXT:
+				System.out.println(msg.obj.toString());
+				break;
+			default:
+				break;
+			}
+		}
+	};
 
 	@Override
 	protected void onStart() {
@@ -78,8 +103,11 @@ public class MainActivity extends Activity implements OnClickListener {
 		// 绑定按钮元素
 		start = (Button) findViewById(R.id.start);
 		findBlue = (Button) findViewById(R.id.findBlue);
+		communication = (Button) findViewById(R.id.communication);
 		start.setOnClickListener(this);
 		findBlue.setOnClickListener(this);
+		communication.setOnClickListener(this);
+		System.out.println("nihao");
 	}
 
 	// 按钮点击事件
@@ -98,7 +126,15 @@ public class MainActivity extends Activity implements OnClickListener {
 				blueAdapter.startDiscovery();
 				findBlue.setText("Stop Searcher");
 			}
-			
+			break;
+		case R.id.communication:
+			//device是要连接的设备，通过获得地址address（00:80:25:4A:1C:79）来构建
+			device = blueAdapter.getRemoteDevice(address);   
+			connect = new BlueToothConnectThread(device, blueAdapter);
+			connect.start();
+			blueToothIOStream = new BlueToothIOStream(connect.socket, handler);
+			blueToothIOStream.start();
+			break;
 		default:
 			break;
 		}

@@ -25,10 +25,8 @@ public class DeviceReceiver extends BroadcastReceiver {
 			if (btd.getBondState() != BluetoothDevice.BOND_BONDED) {
 				deviceList.add(btd.getName() + '\n' + btd.getAddress());
 			}
-
 		}
 	}
-	
 	public List<String> getDeviceList(){
 		return deviceList;
 	}

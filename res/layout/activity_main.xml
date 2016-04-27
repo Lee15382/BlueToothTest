@@ -28,12 +28,25 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/start"
         android:text="Find BlueTooth" />
+     <Button
+        android:id="@+id/communication"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/findBlue"
+        android:text="Bluetooth Communication" />
+     <TextView 
+         android:id="@+id/communicationInfo"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/communication"
+         
+         />
 
     <ListView
         android:id="@+id/devicelist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/findBlue" >
+        android:layout_below="@+id/communicationInfo" >
     </ListView>
 
 </RelativeLayout>
