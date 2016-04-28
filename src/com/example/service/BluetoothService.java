@@ -32,17 +32,6 @@ public class BluetoothService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		// // 注册蓝牙接收广播
-		// if (!hasregister) {
-		// hasregister = true;
-		// mydevice = new DeviceReceiver(deviceList);
-		// IntentFilter filterStart = new IntentFilter(
-		// BluetoothDevice.ACTION_FOUND);
-		// IntentFilter filterEnd = new IntentFilter(
-		// BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-		// registerReceiver(mydevice, filterStart);
-		// registerReceiver(mydevice, filterEnd);
-		// }
 		return startId;
 	}
 
@@ -50,10 +39,6 @@ public class BluetoothService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		blueAdapter.disable();
-	}
-
-	public class FindBluetooth extends Binder {
-
 	}
 
 	// 用于开启蓝牙，搜索设备，显示信息
@@ -102,15 +87,19 @@ public class BluetoothService extends Service {
 			}
 			return deviceList;
 		}
-	}
 
-	public void blueIOSMethod(BluetoothDevice mdevice,
-			BluetoothAdapter adapter, Handler handler) {
-		BlueToothConnectThread connect = new BlueToothConnectThread(mdevice,
-				adapter);
-		connect.start();
-		BlueToothIOStream blueToothIOStream = new BlueToothIOStream(
-				connect.socket, handler);
+		public void blueIOSMethod(BluetoothDevice mdevice,
+				BluetoothAdapter adapter, Handler handler) {
+			BlueToothConnectThread connect = null;
+
+			connect = new BlueToothConnectThread(mdevice, adapter);
+			connect.start();
+
+			BlueToothIOStream blueToothIOStream = new BlueToothIOStream(
+					connect.socket, handler);
+			blueToothIOStream.start();
+
+		}
 	}
 
 	@Override
@@ -121,14 +110,9 @@ public class BluetoothService extends Service {
 
 /**
  * 
- * @author Lee
- * 下面两个线程类，用于使蓝牙进行连接并接受输入流的时候使用
- *
+ * @author Lee 下面两个线程类，用于使蓝牙进行连接并接受输入流的时候使用
+ * 
  */
-
-
-
-
 
 class BlueToothConnectThread extends Thread {
 

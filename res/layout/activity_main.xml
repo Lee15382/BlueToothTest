@@ -15,14 +15,14 @@
         android:gravity="center"
         android:text="My BlueTooth" />
 
-    <Button
+<!--     <Button
         android:id="@+id/start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text"
         android:text="Start BlueTooth" />
-
-    <Button
+ -->
+<!--     <Button
         android:id="@+id/findBlue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,12 +33,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/findBlue"
-        android:text="Bluetooth Communication" />
+        android:text="Bluetooth Communication" /> -->
      <Button
          android:id="@+id/communicationInfo"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:layout_below="@+id/communication"
+         android:layout_below="@+id/text"
          android:text="open buletooth"
          />
  <Button
