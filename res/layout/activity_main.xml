@@ -41,12 +41,26 @@
          android:layout_below="@+id/communication"
          android:text="open buletooth"
          />
+ <Button
+         android:id="@+id/find2"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/communicationInfo"
+         android:text="Find"
+         />
+  <Button
+         android:id="@+id/connect"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/find2"
+         android:text="Connect"
+         />
 
     <ListView
         android:id="@+id/devicelist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/communicationInfo" >
+        android:layout_below="@+id/connect" >
     </ListView>
 
 </RelativeLayout>

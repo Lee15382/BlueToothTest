@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.example.bluetoothbroadcast.DeviceReceiver;
 import com.example.bluetoothtest.R;
 import com.example.service.BluetoothService;
+import com.example.service.BluetoothService.Bluetooth;
 import com.example.tools.BlueToothConnectThread;
 import com.example.tools.BlueToothIOStream;
 
@@ -44,14 +45,13 @@ public class MainActivity extends Activity implements OnClickListener {
 	private String address = "00:80:25:4A:1C:79";
 	private BlueToothIOStream blueToothIOStream;
 
-	// private Context context =MainActivity.this;
-
 	// 界面元素
 	private ListView deviceListView;
 	private Button start;
 	private Button findBlue;
 	private Button communication;
 	private Button test;
+	private Button find2;
 
 	public static final int UPDATE_TEXT = 1;
 	public static final String OPEN = "open buletooth";
@@ -70,7 +70,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	};
 	private BluetoothService.Bluetooth bluetooth;
 
-	private ServiceConnection conn = new ServiceConnection() {
+	private ServiceConnection conn1 = new ServiceConnection() {
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
@@ -82,6 +82,25 @@ public class MainActivity extends Activity implements OnClickListener {
 			bluetooth.setBluetooth();
 			
 
+		}
+	};
+	
+	private ServiceConnection conn2 = new ServiceConnection() {
+		
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+		}
+		
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			bluetooth = (BluetoothService.Bluetooth) service;
+		    ArrayList<String> deviceList2 =(ArrayList<String>) bluetooth.findAvalibleDevice();
+		   
+		for(Iterator it = deviceList2.iterator(); it.hasNext();){
+			String s = (String) it.next();
+			deviceList.add(s);
+		}
+			adapter.notifyDataSetChanged();
 		}
 	};
 
@@ -101,6 +120,15 @@ public class MainActivity extends Activity implements OnClickListener {
 		super.onStart();
 	}
 
+
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		initView();
+	}
+	
 	// 解除广播
 	@Override
 	protected void onDestroy() {
@@ -111,14 +139,11 @@ public class MainActivity extends Activity implements OnClickListener {
 			hasregister = false;
 			unregisterReceiver(mydevice);
 		}
+//		unbindService(conn);
+//		Intent stopIntent = new Intent(this,BluetoothService.class);
+//		stopService(stopIntent);
+		
 		super.onDestroy();
-	}
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		initView();
 	}
 
 	private void initView() {
@@ -135,8 +160,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		start.setOnClickListener(this);
 		findBlue.setOnClickListener(this);
 		communication.setOnClickListener(this);
-		System.out.println("nihao");
 		test.setOnClickListener(this);
+		find2 = (Button) findViewById(R.id.find2);
+		find2.setOnClickListener(this);
 	}
 
 	// 按钮点击事件
@@ -166,18 +192,20 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 
 		case R.id.communicationInfo:
-			System.out.println(test.getText().toString().equals(OPEN));
 			if (test.getText().toString().equals(OPEN)) {
 				Intent bindIntent = new Intent(this, BluetoothService.class);
-				bindService(bindIntent, conn, BIND_AUTO_CREATE);
+				bindService(bindIntent, conn1, BIND_AUTO_CREATE);
 				test.setText(CLOSE);
 			} else {
-				unbindService(conn);
+				unbindService(conn1);
 				Intent stopIntent = new Intent(this,BluetoothService.class);
 				stopService(stopIntent);
 				test.setText(OPEN);
 			}
 			break;
+		case R.id.find2:
+			Intent bindIntent = new Intent(this, BluetoothService.class);
+			bindService(bindIntent, conn2, BIND_AUTO_CREATE);
 		default:
 			break;
 		}
