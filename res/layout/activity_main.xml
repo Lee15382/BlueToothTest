@@ -6,61 +6,50 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.activitys.MainActivity" >
+    tools:context="com.bluetooth.activitys.MainActivity" >
 
     <TextView
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="My BlueTooth" />
+        android:text="MainActivity" 
+        android:textColor="#FF0000"
+        android:textSize="24sp"/>
 
-<!--     <Button
-        android:id="@+id/start"
+    <Button
+        android:id="@+id/communicationInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text"
-        android:text="Start BlueTooth" />
- -->
-<!--     <Button
-        android:id="@+id/findBlue"
+        android:text="open buletooth" />
+
+    <Button
+        android:id="@+id/find2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/start"
-        android:text="Find BlueTooth" />
-     <Button
-        android:id="@+id/communication"
+        android:layout_below="@+id/communicationInfo"
+        android:text="Find" />
+
+    <Button
+        android:id="@+id/connect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/findBlue"
-        android:text="Bluetooth Communication" /> -->
-     <Button
-         android:id="@+id/communicationInfo"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/text"
-         android:text="open buletooth"
-         />
- <Button
-         android:id="@+id/find2"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/communicationInfo"
-         android:text="Find"
-         />
-  <Button
-         android:id="@+id/connect"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/find2"
-         android:text="Connect"
-         />
+        android:layout_below="@+id/find2"
+        android:text="Connect" />
+
+    <Button
+        android:id="@+id/start_second"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/connect"
+        android:text="start_second" />
 
     <ListView
         android:id="@+id/devicelist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/connect" >
+        android:layout_below="@+id/start_second" >
     </ListView>
 
 </RelativeLayout>

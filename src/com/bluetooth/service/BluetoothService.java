@@ -1,4 +1,4 @@
-package com.example.service;
+package com.bluetooth.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +20,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
-import com.example.bluetoothbroadcast.DeviceReceiver;
+import com.bluetooth.broadcast.DeviceReceiver;
 
 public class BluetoothService extends Service {
 	public BluetoothAdapter blueAdapter;
@@ -39,6 +39,7 @@ public class BluetoothService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		blueAdapter.disable();
+//		stopSelf();
 	}
 
 	// 用于开启蓝牙，搜索设备，显示信息
@@ -59,19 +60,19 @@ public class BluetoothService extends Service {
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(intent);
 					// 使蓝牙设备可见，方便配对
-					Intent in = new Intent(
-							BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-					in.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
-							200);
-					in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(in);
+//					Intent in = new Intent(
+//							BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//					in.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
+//							200);
+//					in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//					startActivity(in);
 					// 直接开启，不经过提示
 					// blueAdapter.enable();
 				}
 			}
 		}
 
-		public List<String> findAvalibleDevice() {
+		public List<String> findAvalibleDevice(BluetoothAdapter blueAdapter) {
 			Set<BluetoothDevice> device = blueAdapter.getBondedDevices();
 			if (blueAdapter != null && blueAdapter.isDiscovering()) {
 				deviceList.clear();
@@ -90,15 +91,14 @@ public class BluetoothService extends Service {
 
 		public void blueIOSMethod(BluetoothDevice mdevice,
 				BluetoothAdapter adapter, Handler handler) {
-			BlueToothConnectThread connect = null;
-
-			connect = new BlueToothConnectThread(mdevice, adapter);
-			connect.start();
-
-			BlueToothIOStream blueToothIOStream = new BlueToothIOStream(
-					connect.socket, handler);
-			blueToothIOStream.start();
-
+			
+				BlueToothConnectThread connect = null;
+				connect = new BlueToothConnectThread(mdevice, adapter);
+				connect.start();
+				BlueToothIOStream blueToothIOStream = new BlueToothIOStream(
+						connect.socket, handler);
+				blueToothIOStream.start();
+				System.out.println("kk0");
 		}
 	}
 

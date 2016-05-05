@@ -246,7 +246,7 @@ int id action_context_bar 0x7f09001d
 int id action_menu_divider 0x7f090002
 int id action_menu_presenter 0x7f090003
 int id action_mode_close_button 0x7f090024
-int id action_settings 0x7f090041
+int id action_settings 0x7f090042
 int id activity_chooser_view_content 0x7f090025
 int id always 0x7f09000f
 int id beginning 0x7f090016
@@ -255,7 +255,7 @@ int id collapseActionView 0x7f090010
 int id communicationInfo 0x7f09003d
 int id connect 0x7f09003f
 int id default_activity_button 0x7f090028
-int id devicelist 0x7f090040
+int id devicelist 0x7f090041
 int id dialog 0x7f090014
 int id disableHome 0x7f090009
 int id dropdown 0x7f090015
@@ -293,6 +293,7 @@ int id showCustom 0x7f09000b
 int id showHome 0x7f09000c
 int id showTitle 0x7f09000d
 int id split_action_bar 0x7f09001e
+int id start_second 0x7f090040
 int id submit_area 0x7f090039
 int id tabMode 0x7f090008
 int id text 0x7f09003c

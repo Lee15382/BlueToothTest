@@ -1,4 +1,4 @@
-package com.example.bluetoothbroadcast;
+package com.bluetooth.broadcast;
 
 import java.util.List;
 
@@ -13,11 +13,16 @@ public class DeviceReceiver extends BroadcastReceiver {
 	public DeviceReceiver(List<String> deviceList){
 		this.deviceList = deviceList;
 	}
-	
+	/**
+	 * @author lee
+	 * 重写onReceive
+	 * 查看接收到的广播是否为蓝牙相关，此处为扫描发现蓝牙，接受系统发送的相关广播
+	 * 
+	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
-		String action = intent.getAction();
+		String action = intent.getAction();//获得系统发送的广播信息
+		
 		if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 			BluetoothDevice btd = intent
 					.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
