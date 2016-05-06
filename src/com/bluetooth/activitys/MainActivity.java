@@ -31,8 +31,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	private Intent bindIntent;
 	private BluetoothDevice device = null;
 
-	// private String address = "00:80:25:4A:1C:79";
-	private String address = "00:80:25:48:CA:20";
+	 private String address = "00:80:25:4A:1C:79";
+//	private String address = "00:80:25:48:CA:20";
 	// ½çÃæÔªËØ
 	private ListView deviceListView;
 	private Button test;
@@ -146,12 +146,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			BUTTONID = R.id.connect;
 			// bindService(bindIntent, conn3, BIND_AUTO_CREATE);
 			device = blueAdapter.getRemoteDevice(address);
-			bluetooth.blueIOSMethod(device, blueAdapter, handler);
+			bluetooth.blueIOSMethod(bluetooth,device, blueAdapter, handler,MainActivity.this);
 			break;
 
 		case R.id.start_second:
-			stopService(bindIntent);
+//			unbindService(conn1);
+//			stopService(bindIntent);
 			Intent intent = new Intent(this, SecondActivity.class);
+//			intent.putExtra("bluetooth", bluetooth);
 			startActivity(intent);
 			break;
 		default:

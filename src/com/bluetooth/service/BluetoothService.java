@@ -3,6 +3,7 @@ package com.bluetooth.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +21,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import com.bluetooth.activitys.MainActivity;
 import com.bluetooth.broadcast.DeviceReceiver;
 
 public class BluetoothService extends Service {
@@ -28,22 +30,36 @@ public class BluetoothService extends Service {
 	private boolean hasregister = false;
 	private DeviceReceiver mydevice;
 	private List<String> deviceList = new ArrayList<String>();
+	private Message msg;
+//	private Handler mhandler = new Handler() {
+//		public void handleMessage(Message msg) {
+//			switch (msg.what) {
+//			case 1:
+//				Intent intent = new Intent("com.bluetooth.broadcast.BLUEINFO");
+//				sendBroadcast(intent);
+//				break;
+//			default:
+//				break;
+//			}
+//		}
+//	};
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
 		return startId;
+
 	}
 
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
 		blueAdapter.disable();
-//		stopSelf();
+		super.onDestroy();
+		// stopSelf();
 	}
 
 	// 用于开启蓝牙，搜索设备，显示信息
-	public class Bluetooth extends Binder {
+	public class Bluetooth extends Binder implements Serializable {
 
 		public Bluetooth() {
 		}
@@ -60,12 +76,12 @@ public class BluetoothService extends Service {
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(intent);
 					// 使蓝牙设备可见，方便配对
-//					Intent in = new Intent(
-//							BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-//					in.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
-//							200);
-//					in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//					startActivity(in);
+					// Intent in = new Intent(
+					// BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+					// in.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
+					// 200);
+					// in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					// startActivity(in);
 					// 直接开启，不经过提示
 					// blueAdapter.enable();
 				}
@@ -89,16 +105,18 @@ public class BluetoothService extends Service {
 			return deviceList;
 		}
 
-		public void blueIOSMethod(BluetoothDevice mdevice,
-				BluetoothAdapter adapter, Handler handler) {
-			
-				BlueToothConnectThread connect = null;
-				connect = new BlueToothConnectThread(mdevice, adapter);
-				connect.start();
-				BlueToothIOStream blueToothIOStream = new BlueToothIOStream(
-						connect.socket, handler);
-				blueToothIOStream.start();
-				System.out.println("kk0");
+		public void blueIOSMethod(BluetoothService.Bluetooth bluetooth,
+				BluetoothDevice mdevice, BluetoothAdapter adapter,
+				Handler handler, MainActivity context) {
+
+			BlueToothConnectThread connect = null;
+			connect = new BlueToothConnectThread(mdevice, adapter);
+			connect.start();
+			BlueToothIOStream blueToothIOStream = new BlueToothIOStream(
+					connect.socket, handler, context);
+			blueToothIOStream.start();
+
+			System.out.println("kk0");
 		}
 	}
 
@@ -106,6 +124,7 @@ public class BluetoothService extends Service {
 	public IBinder onBind(Intent intent) {
 		return mBinder;
 	}
+
 }
 
 /**
@@ -169,11 +188,16 @@ class BlueToothIOStream extends Thread {
 	private OutputStream outStream;
 	private BluetoothSocket socket;
 	private Handler handler;
+	private Handler mhandler;
+	private MainActivity context;
 
 	// 构造器
-	public BlueToothIOStream(BluetoothSocket socket, Handler handler) {
+	public BlueToothIOStream(BluetoothSocket socket, Handler handler, MainActivity context) {
 		this.socket = socket;
 		this.handler = handler;
+		this.mhandler = mhandler;
+		this.context = context;
+		
 	}
 
 	public void run() {
@@ -200,6 +224,11 @@ class BlueToothIOStream extends Thread {
 					msg.obj = s;
 					msg.what = 1;
 					handler.sendMessage(msg);
+					Intent intent = new Intent("com.bluetooth.broadcast.BLUEINFO");
+					intent.putExtra("info", s);
+					context.sendBroadcast(intent);
+					// context.send
+
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

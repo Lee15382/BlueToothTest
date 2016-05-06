@@ -26,7 +26,7 @@ public class BaseActivity  extends Activity{
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case UPDATE_TEXT:
-				System.out.println(msg.obj.toString());
+				System.out.println(getClass().getSimpleName()+msg.obj.toString());
 				break;
 			default:
 				break;
@@ -36,13 +36,13 @@ public class BaseActivity  extends Activity{
 	
 	protected BluetoothService.Bluetooth bluetooth;
 	/**
-	 * 一下取得三个服务，分别对应三个按钮，每个按钮开启服务不同的方法进行使用
 	 * 通过向下转型得到Bluetooth对象，然后重写onServiceConnected方法，当绑定服务时启动不同的方法
 	 */
 	protected ServiceConnection conn1 = new ServiceConnection() {
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
+			
 		}
 
 		@Override

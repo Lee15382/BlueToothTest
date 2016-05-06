@@ -26,12 +26,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity 
-            android:name="com.bluetooth.activitys.SecondActivity"
-            ></activity>
-
+        
+        <activity android:name="com.bluetooth.activitys.SSecondActivity" >
+        </activity>
+		<activity 
+		    android:name="com.bluetooth.activitys.SecondActivity"
+		    ></activity>
         <service android:name="com.bluetooth.service.BluetoothService" >
         </service>
+
+<!-- <receiver android:name="com.bluetooth.broadcast.BlueInfoReceiver">
+            <intent-filter >
+                <action android:name="com.bluetooth.broadcast.BLUEINFO"/>
+            </intent-filter>
+        </receiver> -->
     </application>
 
 </manifest>
